@@ -10,6 +10,10 @@ class EntityStatement {
     }
   }
 
+  getSub() {
+    return this.jwt.sub
+  }
+
   add(data) {
     objectAssignDeep(this.jwt, data)
   }
@@ -17,6 +21,15 @@ class EntityStatement {
 
   getJWT() {
     return this.jwt
+  }
+
+  getMetadata(entityType) {
+    if (!this.jwt.metadata) throw new Error("EntityStatement [" + this.jwt.sub + "] does not contain metadata" )
+    if (!this.jwt.metadata[entityType]) {
+      return {}
+      // throw new Error("EntityStatement [" + this.jwt.sub + "] does not contain metadata for this entity type " + entityType)
+    }
+    return this.jwt.metadata[entityType]
   }
 
   getJWKS() {

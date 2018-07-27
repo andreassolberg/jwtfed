@@ -17,10 +17,12 @@
   "author": "Andreas Åkre Solberg <andreas.solberg@uninett.no>",
   "license": "ISC",
   "dependencies": {
+    "cli-highlight": "^2.0.0",
     "jsonwebtoken": "^8.3.0",
     "jwk-lite": "^0.1.2",
     "jwk-to-pem": "^2.0.0",
     "jwks-rsa": "^1.3.0",
-    "object-assign-deep": "^0.4.0"
+    "object-assign-deep": "^0.4.0",
+    "sequelize": "^4.38.0"
   }
 }

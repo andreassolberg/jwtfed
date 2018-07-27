@@ -1,3 +1,5 @@
+const highlight = require('cli-highlight').highlight
+const Sequelize = require('sequelize')
 
 const
   EntityStatement = require('./src/EntityStatement'),
@@ -43,8 +45,8 @@ es1.add({
   ]
 })
 let es1s = signer.sign(es1, 'key1')
-console.log(" ---- JWT ----")
-console.log(JSON.stringify(es1.getJWT(), undefined, 2))
+console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
+console.log(highlight(JSON.stringify(es1.getJWT(), undefined, 2), {language: "json"}))
 console.log('JWT: ' + es1s)
 
 
@@ -71,8 +73,8 @@ es2.add({
   ]
 })
 let es2s = signer.sign(es2, 'ntnu')
-console.log(" ---- JWT ----")
-console.log(JSON.stringify(es2.getJWT(), undefined, 2))
+console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
+console.log(highlight(JSON.stringify(es2.getJWT(), undefined, 2), {language: "json"}))
 console.log('JWT: ' + es2s)
 
 
@@ -99,8 +101,8 @@ es3.add({
   ]
 })
 let es3s = signer.sign(es3, 'feide')
-console.log(" ---- JWT ----")
-console.log(JSON.stringify(es3.getJWT(), undefined, 2))
+console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
+console.log(highlight(JSON.stringify(es3.getJWT(), undefined, 2), {language: "json"}))
 console.log('JWT: ' + es3s)
 
 
@@ -121,12 +123,12 @@ es4.add({
     }
   },
   "jwks": [
-    jwks.getJWT('verify', 'ntnu')
+    jwks.getJWT('verify', 'feide')
   ]
 })
 let es4s = signer.sign(es4, 'edugain')
-console.log(" ---- JWT ----")
-console.log(JSON.stringify(es4.getJWT(), undefined, 2))
+console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
+console.log(highlight(JSON.stringify(es4.getJWT(), undefined, 2), {language: "json"}))
 console.log('JWT: ' + es4s)
 
 const trustroot = [
@@ -134,6 +136,9 @@ const trustroot = [
         "sub": "https://edugain.org/",
         "subTypes": ["openidProvider", "openidClient"],
         "metadata": {
+          "openidClient": {
+            "special": true
+          }
         },
         "jwks": [
           {
@@ -160,7 +165,18 @@ tc.add(es4s)
 
 let paths = tc.findPaths()
 if (paths.length === 0) {throw new Error("No trust paths found")}
-console.log(" ===> Paths")
-console.log(JSON.stringify(paths, undefined, 2))
 
-tc.validate(paths[0])
+console.log()
+console.log(highlight("Discovered trusted paths ", {language: "markdown"}))
+console.log(highlight(JSON.stringify(paths, undefined, 2), {language: "json"}))
+console.log()
+
+let metadata = tc.validate(paths[0], 'openidClient')
+console.log(highlight("--------- ", {language: "markdown"}))
+console.log(highlight("Resolved metadata for " + metadata.identifier, {language: "markdown"}))
+console.log(highlight("Type " + metadata.entityType, {language: "markdown"}))
+console.log(highlight("Metadata:", {language: "markdown"}))
+console.log(highlight(JSON.stringify(metadata.metadata, undefined, 2), {language: "json"}))
+console.log(highlight("Trusted JWKS:", {language: "markdown"}))
+console.log(highlight(JSON.stringify(metadata.jwks, undefined, 2), {language: "json"}))
+console.log()

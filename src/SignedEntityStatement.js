@@ -36,7 +36,7 @@ class SignedEntityStatement {
     }
     let signingKey = jwks.getPublicSigningKey(this.decoded.header.kid)
     let e = new EntityStatement()
-    e.add(this.decoded)
+    e.add(this.decoded.payload)
     return e
   }
 
