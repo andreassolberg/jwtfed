@@ -18,15 +18,15 @@ class ESFetcher {
       })
   }
 
-  fetch(id) {
-    let webfingerEndpoint = new URL('/.well-known/webfinger', id)
+  fetch(sub, iss) {
+    iss = iss || sub
+    let webfingerEndpoint = new URL('/.well-known/webfinger', iss)
     let rel = 'http://oauth.net/specs/federation/1.0/entity'
-    let resource = id
     return rp({
       url: webfingerEndpoint,
       qs: {
         rel: rel,
-        resource: resource
+        resource: sub
       }
     })
       .then((data) => {
@@ -37,7 +37,23 @@ class ESFetcher {
         return this.fetchES(res.links[0].href)
       })
 
+  }
 
+  fetchChained(sub, iss) {
+    let eslist = []
+    console.log("Contacting issuer [" + iss + "] to requeset statements wrt [" + sub +"]" )
+    return this.fetch(sub, iss)
+      .then((ses) => {
+        eslist.push(ses)
+        if (ses.decoded.payload.authorityHints && ses.decoded.payload.authorityHints.length) {
+          return Promise.all(ses.decoded.payload.authorityHints.map(hint => this.fetchChained(ses.decoded.payload.iss, hint)))
+            .then((list) => {
+              eslist.push(list)
+              return eslist
+            })
+        }
+        return eslist
+      })
   }
 
 
