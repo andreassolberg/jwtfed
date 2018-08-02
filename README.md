@@ -1,12 +1,14 @@
 # JWT Federations
 
+JWTFed is a Node.js library that implements creating and signing entity statements, validation of entity statements, validation of trust chains, resolving protocol specific metadata and more.
 
-This is a Node.js library for supporting JWT Federations.
+[Read more about JWT Federations](https://oauth.no/jwtfederations/)
 
+To install
 
-Read more about JWT Federations
-
-* <https://oauth.no/jwtfederations/>
+```
+npm i jwtfed --save
+```
 
 
 Run demo suite with:
