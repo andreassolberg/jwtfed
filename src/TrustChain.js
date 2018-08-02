@@ -17,6 +17,31 @@ class TrustChain {
     }
   }
 
+  dump() {
+
+    let summary = []
+
+    this.entityStatements.forEach((es) => {
+      // console.log(es);
+      summary.push({
+        "iss": es.getIss(),
+        "sub": es.getSub(),
+        "metadata": es.decoded.payload.metadata
+      })
+    })
+
+
+    console.log()
+    console.log(highlight("Debug trust chain ", {language: "markdown"}))
+    console.log('   --- Entity statments ---')
+    console.log(highlight(JSON.stringify(summary, undefined, 2), {language: "json"}))
+
+    console.log('   --- Map ---')
+    console.log(highlight(JSON.stringify(this.map, undefined, 2), {language: "json"}))
+    console.log()
+
+  }
+
   getTrustRootBySub(sub) {
     let r = this.trustroot.find(e => e.sub === sub)
     if (!r) throw new Error("cannot find trust root configuration for " + sub )
@@ -65,14 +90,14 @@ class TrustChain {
 
 
   findPaths(src) {
-    // console.log("Looking for " + src)
-    // console.log(this.map)
+    console.log("Looking for " + src)
+    console.log(this.map)
     let nextTargets = this._utilNextPaths(src)
     let paths = []
     if (this._utilSelfissued(src)) {
       paths.push([])
     }
-    // console.log("Next target ", nextTargets)
+    console.log("Next target ", nextTargets)
     nextTargets.forEach((s) => {
       let links = this.findPaths(s)
       paths = paths.concat(links.map(p => [s].concat(p) ))
@@ -99,10 +124,11 @@ class TrustChain {
     for(let i = 0; i < path.length-1; i++) {
 
       console.log()
-      console.log(highlight("Processing  *" + path[i] + "* -> *" + path[i+1] + "*", {language: "markdown"}))
+      console.log(highlight("Processing  iss:*" + path[i] + "* -> sub:*" + path[i+1] + "*", {language: "markdown"}))
       // console.log(highlight(JSON.stringify(paths, undefined, 2), {language: "json"}))
 
       let ess = this.find(path[i+1], path[i])
+      console.log(ess)
       let es = ess.validate(trustedJwks)
       validatedEntityStatements.push(es)
       trustedJwks = es.getJWKS()

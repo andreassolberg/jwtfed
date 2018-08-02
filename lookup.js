@@ -1,5 +1,6 @@
 const
   ESFetcher = require('./src/ESFetcher'),
+  TrustChain = require('./src/TrustChain'),
   highlight = require('cli-highlight').highlight,
   Sequelize = require('sequelize'),
   fs = require('fs')
@@ -10,7 +11,7 @@ let usage = process.argv[2]
 
 const trustroot = [
     {
-        "sub": "https://edugain.org/",
+        "sub": "https://edugain.andreas.labs.uninett.no/openid",
         "subTypes": ["openidProvider", "openidClient"],
         "metadata": {
           "openidClient": {
@@ -48,11 +49,36 @@ esf.fetchChained(entityid)
     console.log("Result")
     // console.log(ses)
     console.log(highlight(JSON.stringify(list, undefined, 2), {language: "json"}))
+
+
+    const tc = new TrustChain(trustroot)
+    list.forEach((es) => {
+      tc.add(es)
+    })
+
+
+    tc.dump()
+
+    let paths = tc.findPaths()
+    if (paths.length === 0) {throw new Error("No trust paths found")}
+
+    console.log()
+    console.log(highlight("Discovered trusted paths ", {language: "markdown"}))
+    console.log(highlight(JSON.stringify(paths, undefined, 2), {language: "json"}))
+    console.log()
+
+    let metadata = tc.validate(paths[0], 'openidClient')
+    console.log(highlight("--------- ", {language: "markdown"}))
+    console.log(highlight("Resolved metadata for " + metadata.identifier, {language: "markdown"}))
+    console.log(highlight("Type " + metadata.entityType, {language: "markdown"}))
+    console.log(highlight("Metadata:", {language: "markdown"}))
+    console.log(highlight(JSON.stringify(metadata.metadata, undefined, 2), {language: "json"}))
+    console.log(highlight("Trusted JWKS:", {language: "markdown"}))
+    console.log(highlight(JSON.stringify(metadata.jwks, undefined, 2), {language: "json"}))
+    console.log()
+
+
   })
   .catch((err) => {
     console.error("error ", err)
   })
-
-
-
-const tc = new TrustChain(trustroot)

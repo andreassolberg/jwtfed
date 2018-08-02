@@ -19,6 +19,10 @@ npm start
 
 Edit `index.js` to play with different entity statement claims, and run again.
 
+
+```
+node lookup.js openidClient https://serviceprovider.andreas.labs.uninett.no/application1007
+```
 ---
 
 

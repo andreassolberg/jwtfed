@@ -41,15 +41,14 @@ class ESFetcher {
 
   fetchChained(sub, iss) {
     let eslist = []
-    console.log("Contacting issuer [" + iss + "] to requeset statements wrt [" + sub +"]" )
+    // console.log("Contacting issuer [" + iss + "] to requeset statements wrt [" + sub +"]" )
     return this.fetch(sub, iss)
       .then((ses) => {
         eslist.push(ses)
         if (ses.decoded.payload.authorityHints && ses.decoded.payload.authorityHints.length) {
           return Promise.all(ses.decoded.payload.authorityHints.map(hint => this.fetchChained(ses.decoded.payload.iss, hint)))
             .then((list) => {
-              eslist.push(list)
-              return eslist
+              return eslist.concat([].concat.apply([], list))
             })
         }
         return eslist
