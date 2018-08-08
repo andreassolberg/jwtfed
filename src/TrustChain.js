@@ -158,6 +158,7 @@ class TrustChain {
       metadata.addMetadata(validatedEntityStatements[i])
     }
 
+
     return metadata
   }
 

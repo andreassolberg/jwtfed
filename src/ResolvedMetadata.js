@@ -19,6 +19,14 @@ class ResolvedMetadata {
     objectAssignDeep(this.metadata, es.getMetadata(this.entityType))
   }
 
+  getMetadata() {
+    let m = this.metadata
+    objectAssignDeep(m, {
+      "jwks": this.jwks
+    })
+    return m
+  }
+
 
 }
 
