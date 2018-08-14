@@ -67,7 +67,7 @@ esf.fetchChained(entityid)
     console.log(highlight(JSON.stringify(paths, undefined, 2), {language: "json"}))
     console.log()
 
-    let metadata = tc.validate(paths[0], 'openidClient')
+    let metadata = tc.validate(paths[0], usage)
     console.log(highlight("--------- ", {language: "markdown"}))
     console.log(highlight("Resolved metadata for " + metadata.identifier, {language: "markdown"}))
     console.log(highlight("Type " + metadata.entityType, {language: "markdown"}))
