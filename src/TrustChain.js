@@ -152,7 +152,7 @@ class TrustChain {
     console.log()
 
     let metadata = new ResolvedMetadata(es.getSub(), entityType)
-    metadata.addJWKS(trustedJwks)
+    metadata.addJWKS(es.getJWKS())
     for(let i = validatedEntityStatements.length-1; i >= 0; i--) {
       // console.log("Processing " + i)
       metadata.addMetadata(validatedEntityStatements[i])
