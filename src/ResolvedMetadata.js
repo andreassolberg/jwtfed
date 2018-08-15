@@ -1,6 +1,7 @@
 const
   JWKS = require('./JWKS'),
-  objectAssignDeep = require('object-assign-deep')
+  objectAssignDeep = require('object-assign-deep'),
+
 
 class ResolvedMetadata {
 
@@ -15,11 +16,16 @@ class ResolvedMetadata {
     this.jwks = jwks
   }
 
+  getJWTSet() {
+
+  }
+
   addMetadata(es) {
     objectAssignDeep(this.metadata, es.getMetadata(this.entityType))
   }
 
   getMetadata() {
+
     return this.metadata
   }
 

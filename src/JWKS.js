@@ -5,6 +5,11 @@ const
 class JWKS {
 
   constructor(jwks) {
+
+    if (jwks && !Array.isArray(jwks)) {
+      throw new Error("JWKS contructor provided with something that was not an array of keys")
+    }
+
     this.jwks = jwks
   }
 
