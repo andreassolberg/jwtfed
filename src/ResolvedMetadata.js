@@ -1,6 +1,6 @@
 const
   JWKS = require('./JWKS'),
-  objectAssignDeep = require('object-assign-deep'),
+  objectAssignDeep = require('object-assign-deep')
 
 
 class ResolvedMetadata {
