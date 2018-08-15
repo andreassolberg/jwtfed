@@ -20,11 +20,7 @@ class ResolvedMetadata {
   }
 
   getMetadata() {
-    let m = this.metadata
-    objectAssignDeep(m, {
-      "jwks": this.jwks.jwks
-    })
-    return m
+    return this.metadata
   }
 
 

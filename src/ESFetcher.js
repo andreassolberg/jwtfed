@@ -22,6 +22,7 @@ class ESFetcher {
     iss = iss || sub
     let webfingerEndpoint = new URL('/.well-known/webfinger', iss)
     let rel = 'http://oauth.net/specs/federation/1.0/entity'
+    console.log("Performing a WebFinger request to " + webfingerEndpoint + " with this queried resource " + sub)
     return rp({
       url: webfingerEndpoint,
       qs: {
@@ -35,6 +36,9 @@ class ESFetcher {
           throw new Error("No links provided in LRD")
         }
         return this.fetchES(res.links[0].href)
+      })
+      .catch((err) => {
+        console.error("Error fetching webfinger data form "+ webfingerEndpoint + " with this queried resource " + sub + "   error=" + err)
       })
 
   }
