@@ -6,68 +6,94 @@ const
   EntityStatementSigner = require('./src/EntityStatementSigner'),
   TrustChain = require('./src/TrustChain'),
   JWKS = require('./src/JWKS'),
+  WebFingerExample = require('./src/WebFingerExample'),
   jwt = require('jsonwebtoken'),
   fs = require('fs')
-
-
 
 const
   jwks = new JWKS(JSON.parse(fs.readFileSync('./etc/jwks.json', "utf8"))),
   signer = new EntityStatementSigner(jwks),
-  stringify = require("json-stringify-pretty-compact")
+  stringify = require("json-stringify-pretty-compact"),
+  wfe = new WebFingerExample()
 
-//
-// let k = jwks.getPublicSigningKey('key1')
-// console.log(" ---- Public Singing key ----")
-// // console.log(JSON.stringify(k, undefined, 2))
-// console.log(k.pem)
-//
-// let k2 = jwks.getPrivateSigningKey('key1')
-// console.log(" ---- Private Singing key ----")
-// console.log(JSON.stringify(k2, undefined, 2))
-//
-//
-// console.log("==================")
-
-const show = (str, es, encoded) => {
-
-  let x = es.getJWT()
-  if (x.jwks && x.jwks.length > 0) {
-    x.jwks[0].n = x.jwks[0].n.substring(0, 30) + '[...]'
-  }
-
-  console.log("-----------------")
-  console.log(str)
-  console.log("-----------------")
-  console.log(stringify(x))
-  console.log("")
-  console.log("Encoded JWT: " + encoded)
-  console.log("")
-
+const E = {
+  "UMU": "https://umu.se/openid",
+  "SWAMID": "https://www.sunet.se/swamid",
+  "EDUGAIN": "https://edugain.org/oidc",
+  "FOODLE": "https://foodl.org/",
+  "KALMAR": "https://kalmar2.org/openid"
 }
 
 
+
+// UMU self issued
 let esu = new EntityStatement()
 esu.add({
-  "iss": "https://www.umu.se/openid",
-  "sub": "https://www.umu.se/openid",
+  "iss": E.UMU,
+  "sub": E.UMU,
   "metadata": {
     "openid-provider": {
-      "": ""
+      "authorization_endpoint": "https://idp.umu.se/openid/authorization",
+      "token_endpoint": "https://idp.umu.se/openid/token",
+      "response_types_supported": ["code", "code id_token", "token"],
+      "grant_types_supported": ["authorization_code", "implicit", "urn:ietf:params:oauth:grant-type:jwt-bearer"],
+      "subject_types_supported": ["pairwise", "public"],
+      "id_token_signing_alg_values_supported": ["RS256"],
+      "logo_uri": "https://www.umu.se/SRWStatic/img/umu-logo-left-neg-SE.svg",
+      "policy_uri": "https://www.umu.se/en/about-the-website/legal-information/",
+      "LoaMax": "http://eidas.europa.eu/LoA/high"
     }
+  },
+  "authorityHints": {
+    [E.SWAMID]: [E.EDUGAIN],
+    [E.KALMAR]: []
   },
   "jwks": [
     jwks.getJWT('verify', 'umu')
   ]
 })
 let esus = signer.sign(esu, 'umu')
-show("Umeå",  esu, esus)
+esu.show("Umeå", esus)
+wfe.show(esu, esus, 'idp.umu.se')
+
+
+
+
+// SWAMID about UMU
+let umuSwamid = new EntityStatement()
+umuSwamid.add({
+  "iss": E.SWAMID,
+  "sub": E.UMU,
+  "metadata": {
+    "openid-provider": {
+      "subject_types_supported": ["pairwise"],
+      "id_token_signing_alg_values_supported": ["RS256", "RS512"],
+      "organization": "University of Umeå",
+      "contacts": ["legal@umu.se", "technical@umu.se"]
+    },
+    "openid-client": {}
+  },
+  "jwks": [
+    jwks.getJWT('verify', 'swamid')
+  ]
+})
+let umuSwamidS = signer.sign(umuSwamid, 'feide')
+umuSwamid.show("SWAMID about Umeå", umuSwamidS)
+wfe.show(umuSwamid, umuSwamidS)
+
+
+
+
+
+
+
+
 
 
 let es1 = new EntityStatement()
 es1.add({
-  "iss": "https://foodl.org/",
-  "sub": "https://foodl.org/",
+  "iss": E.FOODLE,
+  "sub": E.FOODLE,
   "metadata": {
     "openid-client": {
       "redirect_uris": ["https://foodl.org/openid/callback"]
@@ -77,141 +103,197 @@ es1.add({
     jwks.getJWT('verify', 'key1')
   ]
 })
-
-console.log(" ---- Public key ")
-console.log(stringify(jwks.getJWT('verify', 'key1')))
 let es1s = signer.sign(es1, 'key1')
-show("Testing",  es1, es1s)
-
-return null
-
-let es2 = new EntityStatement()
-es2.add({
-  "iss": "https://ntnu.no/",
-  "sub": "https://localhost:8888/",
-  "leafNode": true,
-  "subTypes": ["samlProvider", "openidProvider"],
-  "metadata": {
-    "openidProvider": {},
-    "openidClient": {
-      "client_id": "https://blackboard.ntnu.no",
-      "client_name": "NTNU Blackboard",
-      "application_type": "web",
-      "technical_contact": "tech-support@ntnu.no",
-      "grant_types_supported": ["authorization_code"],
-      "redirect_uri_prefixes": ["https://blackboard.ntnu.no/", "https://localhost:8888/"],
-      "scopes": ["openid", "email"]
-    }
-  },
-  "jwks": [
-    jwks.getJWT('verify', 'key1')
-  ]
-})
-let es2s = signer.sign(es2, 'ntnu')
-console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
-console.log(highlight(JSON.stringify(es2.getJWT(), undefined, 2), {language: "json"}))
-console.log('JWT: ' + es2s)
-
-
-let es3 = new EntityStatement()
-es3.add({
-  "iss": "https://feide.no/",
-  "sub": "https://ntnu.no/",
-  "leafNode": true,
-  "subTypes": ["samlProvider", "openidProvider"],
-  "metadata": {
-    "openidProvider": {},
-    "openidClient": {
-      "client_id": "https://blackboard.ntnu.no",
-      "client_name": "NTNU Blackboard",
-      "application_type": "web",
-      "technical_contact": "tech-support@ntnu.no",
-      "grant_types_supported": ["authorization_code"],
-      "redirect_uri_prefixes": ["https://blackboard.ntnu.no/", "https://localhost:8888/"],
-      "scopes": ["openid", "email"]
-    }
-  },
-  "jwks": [
-    jwks.getJWT('verify', 'ntnu')
-  ]
-})
-let es3s = signer.sign(es3, 'feide')
-console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
-console.log(highlight(JSON.stringify(es3.getJWT(), undefined, 2), {language: "json"}))
-console.log('JWT: ' + es3s)
+es1.show("Foodle", es1s)
+wfe.show(es1, es1s)
 
 
 
-let es4 = new EntityStatement()
-es4.add({
-  "iss": "https://edugain.org/",
-  "sub": "https://feide.no/",
-  "leafNode": true,
-  "subTypes": ["samlProvider", "openidProvider"],
-  "metadata": {
-    "openidProvider": {
-        "userTLDs": ["no"],
-        "id_token_signing_alg_values_supported": ["RS384", "RS512", "ES512"],
+
+
+
+
+const trustroot1 = [
+  {
+    "sub": E.SWAMID,
+    "metadata": {
+      "openid-provider": {
+        "LoaMax": "http://swamid.se/LoA/substantial"
+      }
     },
-    "openidClient": {
-      "scopes": ["openid", "email", "foo", "edugain", "bar"]
-    }
-  },
-  "jwks": [
-    jwks.getJWT('verify', 'feide')
-  ]
-})
-let es4s = signer.sign(es4, 'edugain')
-console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
-console.log(highlight(JSON.stringify(es4.getJWT(), undefined, 2), {language: "json"}))
-console.log('JWT: ' + es4s)
-
-const trustroot = [
-    {
-        "sub": "https://edugain.org/",
-        "subTypes": ["openidProvider", "openidClient"],
-        "metadata": {
-          "openidClient": {
-            "special": true
-          }
-        },
-        "jwks": [
-          {
-            "kty": "RSA",
-            "use": "sig",
-            "alg": "RS256",
-            "n": "qnd5_krrHKzuJzb5_YEt4sP-YOGSbfVL_g06h1Q-q0nzTsO8MwtWVQx1nuR1cV-ruNwF2sFFGRNejVNKOxL8n5tGuYgJBRJBB5KcbnvRqSEMpObJxQzQuQrzxXFqMlmVRaaCINL5qFWTmdJz79cPleBBPr9DsD9O-nDSGV-R0LT3YWH0SrY5cEDVasUhWnFRY5eOTMRtxUB2m8FXBaZVAlIr5-Gy-SaTmybKQJ74iVpG16Hbw4t0tw14ReEO0aAsDq24cU7bHOueWnxZPfOltueZnIEKe3_eAmh-fieLvkkZSKqXRWKg_tZDbnjUqWH2lVvC2ReEOrns971V0Hjcbw",
-            "e": "AQAB",
-            "key_ops": [
-              "verify"
-            ],
-            "ext": true,
-            "kid": "edugain"
-          }
-        ]
-    }
+    "jwks": [
+      jwks.getJWT('verify', 'swamid')
+    ]
+  }
 ]
 
-const tc = new TrustChain(trustroot)
-tc.add(es1s)
-tc.add(es2s)
-tc.add(es3s)
-tc.add(es4s)
 
-let paths = tc.findPaths()
-if (paths.length === 0) {throw new Error("No trust paths found")}
+console.log(" === ==== Trust root (client) ==== ===")
+trustroot1[0].jwks[0].n = trustroot1[0].jwks[0].n.substring(0, 30) + '[...]'
+console.log(stringify(trustroot1))
+
+
+
+const trustroot2 = [
+  {
+    "sub": E.EDUGAIN,
+    "metadata": {
+      "openid-client": {
+        "rp_scopes": ["openid", "userid-targetedid", "eduperson"],
+        "response_types": ["code", "code id_token"],
+      }
+    },
+    "jwks": [
+      jwks.getJWT('verify', 'edugain')
+    ]
+  },
+  {
+    "sub": E.SWAMID,
+    "metadata": {
+      "openid-client": {
+        "rp_scopes": ["openid", "userid-persistent", "fs"],
+        "response_types": ["code", "code id_token"],
+      }
+    },
+    "jwks": [
+      jwks.getJWT('verify', 'swamid')
+    ]
+  }
+]
+
+console.log(" === ==== Trust root (provider) ==== ===")
+trustroot2[0].jwks[0].n = trustroot2[0].jwks[0].n.substring(0, 30) + '[...]'
+trustroot2[1].jwks[0].n = trustroot2[1].jwks[0].n.substring(0, 30) + '[...]'
+console.log(stringify(trustroot2))
+
+
+
+
+
 
 console.log()
-console.log(highlight("Discovered trusted paths ", {language: "markdown"}))
-console.log(highlight(JSON.stringify(paths, undefined, 2), {language: "json"}))
-console.log()
+console.log('----------------------------------------------------------------')
+let chain = [trustroot1[0].metadata['openid-provider'], umuSwamid.jwt.metadata['openid-provider'], esu.jwt.metadata['openid-provider']]
+console.log(stringify(chain))
+console.log('----------------------------------------------------------------')
 
-let metadata = tc.validate(paths[0], 'openidClient')
-console.log(highlight("--------- ", {language: "markdown"}))
-console.log(highlight("Resolved metadata for " + metadata.identifier, {language: "markdown"}))
-console.log(highlight("Type " + metadata.entityType, {language: "markdown"}))
-console.log(highlight("Metadata:", {language: "markdown"}))
-console.log(highlight(JSON.stringify(metadata.metadata, undefined, 2), {language: "json"}))
-console.log(highlight("Trusted JWKS:", {language: "markdown"}))
-console.log(highlight(JSON.stringify(metadata.jwks, undefined, 2), {language: "json"}))
-console.log()
+console.log("GET /authorize?\n" +
+    "  response_type=code\n" +
+    "  &scope=openid%20profile%20email\n" +
+    "  &client_id=" + encodeURIComponent(es1.jwt.iss) + "\n" +
+    "  &state=2ff7e589-3848-46da-a3d2-949e1235e671\n" +
+    "  &redirect_uri=" + encodeURIComponent(es1.jwt.metadata['openid-client'].redirect_uris[0]) + " HTTP/1.1")
+console.log(`Host: ${ (new URL(esu.jwt.metadata['openid-provider'].authorization_endpoint)).host }`)
+
+
+
+// "openidClient": {
+//   "client_id": "https://blackboard.ntnu.no",
+//   "client_name": "NTNU Blackboard",
+//   "application_type": "web",
+//   "technical_contact": "tech-support@ntnu.no",
+//   "grant_types_supported": ["authorization_code"],
+//   "redirect_uri_prefixes": ["https://blackboard.ntnu.no/", "https://localhost:8888/"],
+//   "scopes": ["openid", "email"]
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// return null
+//
+// let es2 = new EntityStatement()
+// es2.add({
+//   "iss": "https://ntnu.no/",
+//   "sub": "https://localhost:8888/",
+//   "leafNode": true,
+//   "subTypes": ["samlProvider", "openidProvider"],
+//   "metadata": {
+//     "openidProvider": {},
+//     "openidClient": {
+//       "client_id": "https://blackboard.ntnu.no",
+//       "client_name": "NTNU Blackboard",
+//       "application_type": "web",
+//       "technical_contact": "tech-support@ntnu.no",
+//       "grant_types_supported": ["authorization_code"],
+//       "redirect_uri_prefixes": ["https://blackboard.ntnu.no/", "https://localhost:8888/"],
+//       "scopes": ["openid", "email"]
+//     }
+//   },
+//   "jwks": [
+//     jwks.getJWT('verify', 'key1')
+//   ]
+// })
+// let es2s = signer.sign(es2, 'ntnu')
+// console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
+// console.log(highlight(JSON.stringify(es2.getJWT(), undefined, 2), {language: "json"}))
+// console.log('JWT: ' + es2s)
+//
+//
+
+
+//
+// let es4 = new EntityStatement()
+// es4.add({
+//   "iss": "https://edugain.org/",
+//   "sub": "https://feide.no/",
+//   "leafNode": true,
+//   "subTypes": ["samlProvider", "openidProvider"],
+//   "metadata": {
+//     "openidProvider": {
+//         "userTLDs": ["no"],
+//         "id_token_signing_alg_values_supported": ["RS384", "RS512", "ES512"],
+//     },
+//     "openidClient": {
+//       "scopes": ["openid", "email", "foo", "edugain", "bar"]
+//     }
+//   },
+//   "jwks": [
+//     jwks.getJWT('verify', 'feide')
+//   ]
+// })
+// let es4s = signer.sign(es4, 'edugain')
+// console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
+// console.log(highlight(JSON.stringify(es4.getJWT(), undefined, 2), {language: "json"}))
+// console.log('JWT: ' + es4s)
+
+
+//
+// const tc = new TrustChain(trustroot1)
+// tc.add(es1s)
+// tc.add(es2s)
+// tc.add(es3s)
+// tc.add(es4s)
+//
+// let paths = tc.findPaths()
+// if (paths.length === 0) {throw new Error("No trust paths found")}
+//
+// console.log()
+// console.log(highlight("Discovered trusted paths ", {language: "markdown"}))
+// console.log(highlight(JSON.stringify(paths, undefined, 2), {language: "json"}))
+// console.log()
+//
+// let metadata = tc.validate(paths[0], 'openidClient')
+// console.log(highlight("--------- ", {language: "markdown"}))
+// console.log(highlight("Resolved metadata for " + metadata.identifier, {language: "markdown"}))
+// console.log(highlight("Type " + metadata.entityType, {language: "markdown"}))
+// console.log(highlight("Metadata:", {language: "markdown"}))
+// console.log(highlight(JSON.stringify(metadata.metadata, undefined, 2), {language: "json"}))
+// console.log(highlight("Trusted JWKS:", {language: "markdown"}))
+// console.log(highlight(JSON.stringify(metadata.jwks, undefined, 2), {language: "json"}))
+// console.log()

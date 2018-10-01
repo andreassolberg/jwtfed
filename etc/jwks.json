@@ -148,5 +148,35 @@
     "ext": true,
     "kid": "umu",
     "use": "sig"
+  },
+  {
+    "kty": "RSA",
+    "alg": "RS256",
+    "n": "v6xydqciFKGfvQaqYGmk9A7etbfvNY_pBUgGQMH4bdMqQxbQ1-1hJni6kmPJdmqXBDRYuXmXsK8hnCa3Ns_IocPhYWIBv1-S8D2zrSGYxJdU5W3m8wf05mfxtQbWIdq1Lo6I7qZXHsmdI6OdqNPYIqdCKAudHM3fBL99prNu5Y4aeFCjnsHVSmNmb55N8QkLutHYs0f8be1L_8uZhv5HzIPkeAP1BMvC6WfH7RbAup5ufmH8aDy0YhPNiVIKzTfOAGwCOODzEr0q_dkTrZoyeb-wA5kcVDtMg4eshuyQxlS9_t8YfwGDZgRYGYQG1LoCOChVEamfIzpQoOa0PATOkQ",
+    "e": "AQAB",
+    "key_ops": [
+      "verify"
+    ],
+    "ext": true,
+    "kid": "swamid",
+    "use": "sig"
+  },
+  {
+    "kty": "RSA",
+    "alg": "RS256",
+    "n": "v6xydqciFKGfvQaqYGmk9A7etbfvNY_pBUgGQMH4bdMqQxbQ1-1hJni6kmPJdmqXBDRYuXmXsK8hnCa3Ns_IocPhYWIBv1-S8D2zrSGYxJdU5W3m8wf05mfxtQbWIdq1Lo6I7qZXHsmdI6OdqNPYIqdCKAudHM3fBL99prNu5Y4aeFCjnsHVSmNmb55N8QkLutHYs0f8be1L_8uZhv5HzIPkeAP1BMvC6WfH7RbAup5ufmH8aDy0YhPNiVIKzTfOAGwCOODzEr0q_dkTrZoyeb-wA5kcVDtMg4eshuyQxlS9_t8YfwGDZgRYGYQG1LoCOChVEamfIzpQoOa0PATOkQ",
+    "e": "AQAB",
+    "d": "qkScof6ybbVt21NSgrcWS5_yA2dT3jbq_0AOHfSxpY4SWuqnt0kuJijVRDnUu5bQdHGz53-2WsQYjUhvNQe76MfDLOkNOF3EgBmvxTq1JN5yEiVhJb-JtCveMbvS-Nv6W1NPHQEzHyxmpUQxR8p4k8AVKtG2TeIsHWGmUzHOb6gR3UYz-EJYWsiQVAwyM1kSrV6EPhoyd5VoT5sj4W5Nv0ClR8c6QlkqQYKNCu_oWBBvucmcuN5700E0kTWDp0iqVObuKZQDaaK82DojgGntbdJlis1l2rNzFttTZAIzKHB9uoYS5hR7EMO43-CEmyFiWef_gK2Y0U1cE6XME9ItiQ",
+    "p": "-8hP9VNYZz1Bg-UNGcR1LOFxdYwm-dryR07nw0rn3rLt9iCbE-G2qxUBCOgIczMNdVvG9s58mR2UHYINujX_y5fD20p4hAmWNo8Atjq7hpWemIEdp1PYOExTtCi_ij5ZbFpvnguG9P1v1Xd1HUIdLjooWhRBCMJLrqVnFYXun-s",
+    "q": "wuJgn6rQQvrBrTnkhahPojV59GjN-DcUB8p-R6V_e4ADizCmY2LK4dZMI-mxIMG4mi39FCLFz6UBY9_tthW6CcoRfQBJVPhl3mhA9ac55dbirgpYRqmmTicUr9wiCTgwwzXfGd5uh3SSiHlwYUtQvXa2TW1FKA5cChiwKH8y6HM",
+    "dp": "BUJs8Sn5icaMzM2HFYe2DubysMrpsYRyVSz_yGOTLmK8d8y8kJDBeRdqOx5ltspVOKNfJ56umaA1jNw_nykrm7wi2jzXAaMVoTQhhqz5Z9lOQ89GqE0nEh3-DaBgR-n_gjTtafbBrfJxWJszNhZAd8u9NgyAQ0eTvyUzXw66Kls",
+    "dq": "BNshLzlRYSngY5GauR3dhhwxAr8Nys6MiDkqdlyQVaJ19CTtMHLIvWHamdZ73GYXVHgq4zKOnULuSu_Me4oFDbNkRioYqa5a03TjkXtuPOTi1xVY58HYbAAbStqAWpx00phoC7v4IxXrhM0J2NLImz_3AOzlGT9qWbINyaSJvzM",
+    "qi": "2409UVApEfrH28NbUtRtOWfqodIT_cz92pC4-2MY4q6pJiO_gUl-L8ftyCfHbElAIxGVidOuZeMJHhZO-0z2kLZX4095ogw4qaruFUQUdSw5e4pIKMd4Y-1_E1EvSU9xKLkY36KFUOlJNiS0pSYXTF04XXaPVe8TLPTxaotbSDo",
+    "key_ops": [
+      "sign"
+    ],
+    "ext": true,
+    "kid": "swamid",
+    "use": "sig"
   }
 ]

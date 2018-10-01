@@ -1,6 +1,7 @@
 const
   JWKS = require('./JWKS'),
-  objectAssignDeep = require('object-assign-deep')
+  objectAssignDeep = require('object-assign-deep'),
+  stringify = require("json-stringify-pretty-compact")
 
 
 
@@ -46,6 +47,26 @@ class EntityStatement {
     }
     return new JWKS(this.jwt.jwks)
   }
+
+
+
+  show (str, encoded) {
+
+    let x = this.getJWT()
+    if (x.jwks && x.jwks.length > 0) {
+      x.jwks[0].n = x.jwks[0].n.substring(0, 30) + '[...]'
+    }
+
+    console.log("-----------------")
+    console.log(str)
+    console.log("-----------------")
+    console.log(stringify(x))
+    console.log("")
+    console.log("Encoded JWT: " + encoded)
+    console.log("")
+
+  }
+
 
 }
 
