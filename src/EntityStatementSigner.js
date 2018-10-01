@@ -20,7 +20,7 @@ class EntityStatement {
     expiresIn = expiresIn || '1w'
     let signed = jwt.sign(es.getJWT(), signingkey.pem, {
       algorithm: 'RS256',
-      expiresIn: expiresIn,
+      // expiresIn: expiresIn,
       keyid: kid,
       jwtid: uuidv4()
     })

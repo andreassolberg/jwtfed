@@ -11,8 +11,10 @@ const
 
 
 
-const jwks = new JWKS(JSON.parse(fs.readFileSync('./etc/jwks.json', "utf8")))
-const signer = new EntityStatementSigner(jwks)
+const
+  jwks = new JWKS(JSON.parse(fs.readFileSync('./etc/jwks.json', "utf8"))),
+  signer = new EntityStatementSigner(jwks),
+  stringify = require("json-stringify-pretty-compact")
 
 //
 // let k = jwks.getPublicSigningKey('key1')
@@ -27,28 +29,61 @@ const signer = new EntityStatementSigner(jwks)
 //
 // console.log("==================")
 
+const show = (str, es, encoded) => {
+
+  let x = es.getJWT()
+  if (x.jwks && x.jwks.length > 0) {
+    x.jwks[0].n = x.jwks[0].n.substring(0, 30) + '[...]'
+  }
+
+  console.log("-----------------")
+  console.log(str)
+  console.log("-----------------")
+  console.log(stringify(x))
+  console.log("")
+  console.log("Encoded JWT: " + encoded)
+  console.log("")
+
+}
+
+
+let esu = new EntityStatement()
+esu.add({
+  "iss": "https://www.umu.se/openid",
+  "sub": "https://www.umu.se/openid",
+  "metadata": {
+    "openid-provider": {
+      "": ""
+    }
+  },
+  "jwks": [
+    jwks.getJWT('verify', 'umu')
+  ]
+})
+let esus = signer.sign(esu, 'umu')
+show("Umeå",  esu, esus)
+
 
 let es1 = new EntityStatement()
 es1.add({
-  "iss": "https://localhost:8888/",
-  "sub": "https://localhost:8888/",
-  "leafNode": true,
-  "subTypes": ["samlProvider", "openidProvider"],
+  "iss": "https://foodl.org/",
+  "sub": "https://foodl.org/",
   "metadata": {
-    "openidProvider": {},
-    "openidClient": {
-      "redirect_uris": ["https://localhost:8888/callback"]
+    "openid-client": {
+      "redirect_uris": ["https://foodl.org/openid/callback"]
     }
   },
   "jwks": [
     jwks.getJWT('verify', 'key1')
   ]
 })
-let es1s = signer.sign(es1, 'key1')
-console.log(highlight("-------- *JWT*  ", {language: "markdown"}))
-console.log(highlight(JSON.stringify(es1.getJWT(), undefined, 2), {language: "json"}))
-console.log('JWT: ' + es1s)
 
+console.log(" ---- Public key ")
+console.log(stringify(jwks.getJWT('verify', 'key1')))
+let es1s = signer.sign(es1, 'key1')
+show("Testing",  es1, es1s)
+
+return null
 
 let es2 = new EntityStatement()
 es2.add({

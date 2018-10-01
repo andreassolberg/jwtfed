@@ -2,12 +2,19 @@ const
   JWKS = require('./JWKS'),
   objectAssignDeep = require('object-assign-deep')
 
+
+
 class EntityStatement {
 
   constructor() {
-    this.jwt = {
-      metadata: {}
-    }
+    this.jwt = {}
+    this.init()
+    this.jwt.metadata = {}
+  }
+
+  init() {
+    this.jwt.iat = Math.round((new Date().getTime()) / 1000)
+    this.jwt.exp = this.jwt.iat + 3600
   }
 
   getSub() {

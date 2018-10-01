@@ -18,6 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "cli-highlight": "^2.0.0",
+    "json-stringify-pretty-compact": "^1.2.0",
     "jsonwebtoken": "^8.3.0",
     "jwk-lite": "^0.1.2",
     "jwk-to-pem": "^2.0.0",
