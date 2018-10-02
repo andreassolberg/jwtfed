@@ -1,6 +1,7 @@
-const highlight = require('cli-highlight').highlight
-const Sequelize = require('sequelize')
-
+const
+  highlight = require('cli-highlight').highlight,
+  Sequelize = require('sequelize'),
+  URL = require('url').URL
 const
   EntityStatement = require('./src/EntityStatement'),
   EntityStatementSigner = require('./src/EntityStatementSigner'),

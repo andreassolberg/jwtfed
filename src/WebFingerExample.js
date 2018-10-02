@@ -1,4 +1,4 @@
-
+const URL = require('url').URL
 const REL = 'https://openid.net/specs/federation/1.0/entity'
 
 class WebFingerExample {
