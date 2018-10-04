@@ -41,7 +41,7 @@ class EntityStatement {
   }
 
   getJWKS() {
-    if (this.jwt.jwks && !Array.isArray(this.jwt.jwks)) {
+    if (this.jwt.jwks && (!this.jwt.jwks.keys || !this.jwt.jwks.keys.length)) {
       console.log(" ----- Error with this statement ----")
       console.log(JSON.stringify(this.jwt.jwks, undefined, 2))
     }

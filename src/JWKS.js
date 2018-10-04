@@ -6,23 +6,33 @@ class JWKS {
 
   constructor(jwks) {
 
-    if (jwks && !Array.isArray(jwks)) {
+    if (jwks && typeof jwks === 'object' && jwks.hasOwnProperty('keys')) {
+      this.jwks = jwks
+    } else if (!jwks) {
+      this.jwks = {
+        "keys": []
+      }
+    } else {
       throw new Error("JWKS contructor provided with something that was not an array of keys")
     }
 
-    this.jwks = jwks
+
   }
 
   getSigningKeys(operation) {
 
-    if (!this.jwks || !this.jwks.length) {
-      throw new Error('JWKS not provided');
+    if (!this.jwks || !this.jwks.keys || !this.jwks.keys.length) {
+      throw new Error('JWKS not provided')
     }
 
-    const signingKeys = this.jwks
+    console.log("YAY operation", this.jwks.keys)
+
+    const signingKeys = this.jwks.keys
       .filter(
-          key => key.use === 'sig' && key.kty === 'RSA' && key.kid && key.key_ops &&
-          key.key_ops.includes(operation) &&
+          key => 
+          // key.use === 'sig' &&
+          key.kty === 'RSA' && key.kid &&
+          // key.key_ops && key.key_ops.includes(operation) &&
           ((key.x5c && key.x5c.length) || (key.n && key.e))
       )
 

@@ -42,16 +42,18 @@ esu.add({
       "id_token_signing_alg_values_supported": ["RS256"],
       "logo_uri": "https://www.umu.se/SRWStatic/img/umu-logo-left-neg-SE.svg",
       "policy_uri": "https://www.umu.se/en/about-the-website/legal-information/",
-      "LoaMax": "http://eidas.europa.eu/LoA/high"
+      "loa_max": "http://eidas.europa.eu/LoA/high"
     }
   },
-  "authorityHints": {
+  "authority_hints": {
     [E.SWAMID]: [E.EDUGAIN],
     [E.KALMAR]: []
   },
-  "jwks": [
-    jwks.getJWT('verify', 'umu')
-  ]
+  "jwks": {
+    "keys": [
+      jwks.getJWT('verify', 'umu')
+    ]
+  }
 })
 let esus = signer.sign(esu, 'umu')
 esu.show("Umeå", esus)
@@ -74,9 +76,11 @@ umuSwamid.add({
     },
     "openid-client": {}
   },
-  "jwks": [
-    jwks.getJWT('verify', 'swamid')
-  ]
+  "jwks": {
+    "keys": [
+      jwks.getJWT('verify', 'swamid')
+    ]
+  }
 })
 let umuSwamidS = signer.sign(umuSwamid, 'feide')
 umuSwamid.show("SWAMID about Umeå", umuSwamidS)
@@ -100,9 +104,11 @@ es1.add({
       "redirect_uris": ["https://foodl.org/openid/callback"]
     }
   },
-  "jwks": [
-    jwks.getJWT('verify', 'key1')
-  ]
+  "jwks": {
+    "keys": [
+      jwks.getJWT('verify', 'key1')
+    ]
+  }
 })
 let es1s = signer.sign(es1, 'key1')
 es1.show("Foodle", es1s)
@@ -119,18 +125,20 @@ const trustroot1 = [
     "sub": E.SWAMID,
     "metadata": {
       "openid-provider": {
-        "LoaMax": "http://swamid.se/LoA/substantial"
+        "loa_max": "http://swamid.se/LoA/substantial"
       }
     },
-    "jwks": [
-      jwks.getJWT('verify', 'swamid')
-    ]
+    "jwks": {
+      "keys": [
+        jwks.getJWT('verify', 'swamid')
+      ]
+    }
   }
 ]
 
 
 console.log(" === ==== Trust root (client) ==== ===")
-trustroot1[0].jwks[0].n = trustroot1[0].jwks[0].n.substring(0, 30) + '[...]'
+trustroot1[0].jwks.keys[0].n = trustroot1[0].jwks.keys[0].n.substring(0, 30) + '[...]'
 console.log(stringify(trustroot1))
 
 
@@ -144,9 +152,11 @@ const trustroot2 = [
         "response_types": ["code", "code id_token"],
       }
     },
-    "jwks": [
-      jwks.getJWT('verify', 'edugain')
-    ]
+    "jwks": {
+      "keys": [
+        jwks.getJWT('verify', 'edugain')
+      ]
+    }
   },
   {
     "sub": E.SWAMID,
@@ -156,15 +166,17 @@ const trustroot2 = [
         "response_types": ["code", "code id_token"],
       }
     },
-    "jwks": [
-      jwks.getJWT('verify', 'swamid')
-    ]
+    "jwks": {
+      "keys": [
+        jwks.getJWT('verify', 'swamid')
+      ]
+    }
   }
 ]
 
 console.log(" === ==== Trust root (provider) ==== ===")
-trustroot2[0].jwks[0].n = trustroot2[0].jwks[0].n.substring(0, 30) + '[...]'
-trustroot2[1].jwks[0].n = trustroot2[1].jwks[0].n.substring(0, 30) + '[...]'
+trustroot2[0].jwks.keys[0].n = trustroot2[0].jwks.keys[0].n.substring(0, 30) + '[...]'
+trustroot2[1].jwks.keys[0].n = trustroot2[1].jwks.keys[0].n.substring(0, 30) + '[...]'
 console.log(stringify(trustroot2))
 
 
