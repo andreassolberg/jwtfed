@@ -17,7 +17,7 @@ console.log(highlight("About to fetch entity statements for " + target, {languag
 const esf = new ESFetcher()
 esf.fetch(target)
   .then((ses) => {
-    console.log("RESult")
+    console.log("ReSult")
     // console.log(ses)
     console.log(highlight(JSON.stringify(ses.decoded, undefined, 2), {language: "json"}))
   })
