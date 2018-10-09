@@ -31,6 +31,8 @@ class ESFetcher {
       }
     })
       .then((data) => {
+        console.log(" --- data ---")
+        console.log(data)
         let res = JSON.parse(data)
         if (res.links.length < 1) {
           throw new Error("No links provided in LRD")
@@ -49,7 +51,9 @@ class ESFetcher {
     return this.fetch(sub, iss)
       .then((ses) => {
         eslist.push(ses)
-        if (ses.decoded.payload.authorityHints && ses.decoded.payload.authorityHints.length) {
+        console.log("----")
+        console.log(ses.decoded)
+        if (ses.decoded.payload.authority_hints && ses.decoded.payload.authority_hints.length) {
           return Promise.all(ses.decoded.payload.authorityHints.map(hint => this.fetchChained(ses.decoded.payload.iss, hint)))
             .then((list) => {
               return eslist.concat([].concat.apply([], list))
