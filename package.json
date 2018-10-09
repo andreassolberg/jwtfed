@@ -1,6 +1,6 @@
 {
   "name": "jwtfed",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "JWT Federations supporting library",
   "main": "./src/index.js",
   "scripts": {
