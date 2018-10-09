@@ -12,7 +12,7 @@ let usage = process.argv[2]
 const trustroot = [
     {
         "sub": "https://edugain.andreas.labs.uninett.no/openid",
-        "subTypes": ["openidProvider", "openidClient"],
+        "subTypes": ["openid_provider", "openid_client"],
         "metadata": {
           "openidClient": {
             "special": true
