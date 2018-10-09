@@ -29,10 +29,10 @@ class JWKS {
 
     const signingKeys = this.jwks.keys
       .filter(
-          key => 
-          // key.use === 'sig' &&
+          key =>
+          ( !key.use || (key.use === 'sig')) &&
           key.kty === 'RSA' && key.kid &&
-          // key.key_ops && key.key_ops.includes(operation) &&
+          ( !key.key_ops || key.key_ops.includes(operation)) &&
           ((key.x5c && key.x5c.length) || (key.n && key.e))
       )
 
