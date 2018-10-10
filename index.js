@@ -67,6 +67,9 @@ let umuSwamid = new EntityStatement()
 umuSwamid.add({
   "iss": E.SWAMID,
   "sub": E.UMU,
+  "sub_meta": {
+    "name": "University of Umeå"
+  },
   "metadata": {
     "openid-provider": {
       "subject_types_supported": ["pairwise"],
@@ -123,6 +126,9 @@ wfe.show(es1, es1s)
 const trustroot1 = [
   {
     "sub": E.SWAMID,
+    "sub_meta": {
+      "name": "SWAMID"
+    },
     "metadata": {
       "openid-provider": {
         "loa_max": "http://swamid.se/LoA/substantial"
