@@ -25,7 +25,7 @@ class JWKS {
       throw new Error('JWKS not provided')
     }
 
-    console.log("YAY operation", this.jwks.keys)
+    // console.log("YAY operation", this.jwks.keys)
 
     const signingKeys = this.jwks.keys
       .filter(
