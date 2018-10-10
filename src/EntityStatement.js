@@ -53,8 +53,8 @@ class EntityStatement {
   show (str, encoded) {
 
     let x = this.getJWT()
-    if (x.jwks && x.jwks.length > 0) {
-      x.jwks[0].n = x.jwks[0].n.substring(0, 30) + '[...]'
+    if (x.jwks && x.jwks.keys.length > 0) {
+      x.jwks.keys[0].n = x.jwks.keys[0].n.substring(0, 30) + '[...]'
     }
 
     console.log("-----------------")
