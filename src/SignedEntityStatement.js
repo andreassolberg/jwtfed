@@ -30,6 +30,16 @@ class SignedEntityStatement {
     return this.decoded.payload.iss === iss
   }
 
+  getHints() {
+    let hints = []
+    if (this.decoded.payload.authority_hints) {
+      for(let hint in this.decoded.payload.authority_hints) {
+        hints.push(hint)
+      }
+    }
+    return hints
+  }
+
   validate(jwks) {
     if (!this.decoded.header.kid) {
       throw new Error("Missing [kid] header claim. Will not attempt to verify.")
